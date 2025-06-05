@@ -31,9 +31,7 @@ fMask = spm_read_vols(spm_vol(functional_atlas),1);
 
 %% get participant's folder
 subj_str    = sprintf('%02d',subjnum);
-% subj_str
 subj_folder = dir([path_fMRI '/' subj_str '_CISC*']);
-% subj_folder
 
 if ~isempty(subj_folder) 
    disp('A pasta existe');
@@ -58,7 +56,6 @@ for iblock = 1:4
 %     data_folder = [subj_folder data_folder.name '/'];
     epi_folder
 %     epi_folder = dir([data_folder 'fMRI_block_' num2str(iblock) '_preprocessed*']);
-%     epi_folder
     if ~isempty(epi_folder)
         EPI_folders = [EPI_folders; [subj_folder epi_folder.name] ];
         run_label = [run_label; iblock];
@@ -71,10 +68,8 @@ n_runs      = numel(EPI_folders);
 EPI_files = cell(n_runs,1);
 for irun = 1:n_runs
     epi_files        = dir([ EPI_folders{irun}, '/sw_uf*.nii']);
-%     epi_files
     EPI_files{irun}  = arrayfun(@(x) [EPI_folders{irun} '/' x.name],epi_files,'UniformOutput',false);
 end
-% EPI_files
 
 %% convert onsets to TRs
 onsets_TR = cell(n_runs,1);
@@ -86,13 +81,9 @@ fc = cell(n_runs,1);
 for irun = 1:n_runs
 
     clc;
-%     EPI_folders{irun}
     sprintf('run %d of %d...',[irun n_runs])
     label = run_label{irun};
     which_ROI
-    
-    %behavioural_data = ['C:\Users\maxine\Dropbox\Projects\Sackler postdoc\fMRI & Time (Warrick)\data\' cisc_file '\eye_and_behaviour_' num2str(irun) '.mat'];
-    %load(behavioural_data);
     
     % keep the behavioural data
     subjdata{irun} = behaviour(behaviour.run==label,:);
@@ -107,19 +98,15 @@ for irun = 1:n_runs
         offsets_TR{itrial} = floor(offsets(itrial)/TR);
     end
     
-%     subjdata{irun}
     subjdata{irun} = addvars(subjdata{irun}, onsets_TR, 'NewVariableNames', 'onsets_TR');
     subjdata{irun} = addvars(subjdata{irun}, offsets_TR, 'NewVariableNames', 'offsets_TR');
     subjdata{irun}
     t_corr = table2array(readtable([path_savedat '/time_corr.csv']));
-%     t_corr
     t_corr = t_corr(irun, :);
-%     t_corr(itrial)
     
     if strcmp(which_ROI, 'rGlasser')
          
         % take those EPIs
-%         EPI_files{irun} 
         tEPI = EPI_files{irun};
         path_tEPI   = fullfile(base_path, 'extracted_voxels', int2str(subjnum), 'whole_TS', 'smoothed');
         if ~isfolder(path_tEPI)
@@ -138,7 +125,6 @@ for irun = 1:n_runs
             for iepi = 1:numel(tEPI)
                 
                 % get the voxels of the current EPI
-    %             iepi
                 current_epi = spm_read_vols(spm_vol(tEPI{iepi}));
                 
                 % get the signal from all voxels in the mask
@@ -173,7 +159,6 @@ for irun = 1:n_runs
             for iepi = 1:numel(tEPI)
                 
                 % get the voxels of the current EPI
-    %             iepi
                 current_epi = spm_read_vols(spm_vol(tEPI{iepi}));
                 
                 % get the signal from all voxels in the mask
