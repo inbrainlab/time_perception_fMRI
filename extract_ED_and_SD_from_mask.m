@@ -18,6 +18,7 @@
 % Trial-by-trial predictions of subjective time from human brain activity,
 % Sherman et al. 2020, biorxiv
 % m.sherman@sussex.ac.uk
+% Adapted in 2024 (desouza.erickalmeida@gmail.com)
 % ----------------------------------------------------------
 
 function extract_ED_and_SD_from_mask( which_ROI , subjnum  , rerun, mode)
@@ -79,7 +80,6 @@ for iblock = 1:4
 %     data_folder = [subj_folder data_folder.name '/'];
     epi_folder
 %     epi_folder = dir([data_folder 'fMRI_block_' num2str(iblock) '_preprocessed*']);
-%     epi_folder
     if ~isempty(epi_folder)
         EPI_folders = [EPI_folders; [subj_folder epi_folder.name] ];
         run_label = [run_label; iblock];
@@ -92,10 +92,8 @@ n_runs      = numel(EPI_folders);
 EPI_files = cell(n_runs,1);
 for irun = 1:n_runs
     epi_files        = dir([ EPI_folders{irun}, '/sw_uf*.nii']);
-%     epi_files
     EPI_files{irun}  = arrayfun(@(x) [EPI_folders{irun} '/' x.name],epi_files,'UniformOutput',false);
 end
-% EPI_files
 
 %% convert onsets to TRs
 onsets_TR = cell(n_runs,1);
@@ -107,13 +105,9 @@ fc = cell(n_runs,1);
 for irun = 1:n_runs
 
     clc;
-%     EPI_folders{irun}
+
     sprintf('run %d of %d...',[irun n_runs])
     label = run_label{irun};
-    which_ROI
-    
-    %behavioural_data = ['C:\Users\maxine\Dropbox\Projects\Sackler postdoc\fMRI & Time (Warrick)\data\' cisc_file '\eye_and_behaviour_' num2str(irun) '.mat'];
-    %load(behavioural_data);
     
     % keep the behavioural data
     subjdata{irun} = behaviour(behaviour.run==label,:);
@@ -127,16 +121,12 @@ for irun = 1:n_runs
         onsets_TR{itrial} = floor(onsets(itrial)/TR);
         offsets_TR{itrial} = floor(offsets(itrial)/TR);
     end
-    
-%     subjdata{irun}
+
     subjdata{irun} = addvars(subjdata{irun}, onsets_TR, 'NewVariableNames', 'onsets_TR');
     subjdata{irun} = addvars(subjdata{irun}, offsets_TR, 'NewVariableNames', 'offsets_TR');
-    subjdata{irun}
     t_corr = table2array(readtable([path_savedat '/time_corr.csv']));
-%     t_corr
     t_corr = t_corr(irun, :);
-%     t_corr(itrial)
-    
+
     if strcmp(which_ROI, 'rGlasser')
          % loop trials and extract data
         for itrial = 1:numel(offsets)
@@ -145,7 +135,6 @@ for irun = 1:n_runs
             t_off = subjdata{1, irun}.offsets_TR{itrial} - t_corr(itrial);
             
             % take those EPIs
-    %         EPI_files{irun} 
             tEPI = EPI_files{irun}(t_on:t_off);
             
             avg_data = nan( 360 , numel(tEPI) );
@@ -160,7 +149,6 @@ for irun = 1:n_runs
                 for iepi = 1:numel(tEPI)
                     
                     % get the voxels of the current EPI
-        %             iepi
                     current_epi = spm_read_vols(spm_vol(tEPI{iepi}));
                     
                     % get the signal from all voxels in the mask
@@ -185,7 +173,6 @@ for irun = 1:n_runs
 
             %% save time-series
             vd = table2array(subjdata{irun}(itrial, 'humanReport'));
-    %         disp(vd);
             path_ts   = [path_savedat '/' 'time_series' '/' 'smoothed'];
             if ~isfolder(path_ts)
                 mkdir(path_ts); % this is the folder where you'll save the data
@@ -202,7 +189,6 @@ for irun = 1:n_runs
             t_off = subjdata{1, irun}.offsets_TR{itrial} - t_corr(itrial);
             
             % take those EPIs
-    %         EPI_files{irun} 
             tEPI = EPI_files{irun}(t_on:t_off);
             
             % initialise data for the trial
@@ -212,7 +198,6 @@ for irun = 1:n_runs
             for iepi = 1:numel(tEPI)
                 
                 % get the voxels of the current EPI
-    %             iepi
                 current_epi = spm_read_vols(spm_vol(tEPI{iepi}));
                 
                 % get the signal from all voxels in the mask
