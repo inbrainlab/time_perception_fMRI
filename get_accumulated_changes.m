@@ -18,8 +18,7 @@
 %
 %  Maxine Sherman
 %  m.sherman@sussex.ac.uk
-%
-
+% Adapted in 2024 (desouza.erickalmeida@gmail.com)
 
 %  --------------------------------------------------
 function [d,y] = get_accumulated_changes(subjnum, region , layer, analysis)
@@ -72,14 +71,12 @@ switch layer
     case 2 % middling changes
         tmax         = 1.5;
         tmin         = -0.5;
-%         tmin = -1;
         decay_rate   = 1; % smaller values => steeper
         noise_sd     = 0.05;
         
     case 3 % fewest changes
         tmax         = 1.5;
         tmin         = 0;
-%         tmin = -1;
         decay_rate   = 1; % smaller values => steeper
         noise_sd     = 0.05;      
     end
@@ -101,7 +98,6 @@ d = struct('nSalient',[],'report',[],'isCity',[],'bias',[],'duration',[]);
 for irun = 1:numel(subjdata.subjdata)
 
     df{irun} = subjdata.subjdata{irun};
-    df{irun}
     
     % get all the data for the run
     run_data = struct('z',[],'t',[],'tr',[],'newTrial',[]);
@@ -113,7 +109,6 @@ for irun = 1:numel(subjdata.subjdata)
                 z                 = subjdata{irun,itrial}.euclideanDistance;
             case 'signedChanges'
                 z                 = df{irun}.voxdiff(itrial);
-                z = z{1};
         end
        
         run_data.z        = [run_data.z ; z ];
@@ -127,9 +122,6 @@ for irun = 1:numel(subjdata.subjdata)
     run_data.z = zscore(run_data.z); %run_data.z-mean(run_data.z);%
     
     for itrial = 1:height(df{irun})
-%         if irun==2 & itrial==11
-%            pause
-%         end
 
         % get info
         idx = find(run_data.t == itrial);
@@ -160,7 +152,6 @@ for irun = 1:numel(subjdata.subjdata)
                 % get prev criterion
                 if t == 1; c = tmax;
                 else
-%                     y.cVal
                     c = y.cVal(end) - slope*exp( -t * decay_rate ) + baseline;
                 end
                
@@ -187,16 +178,6 @@ for irun = 1:numel(subjdata.subjdata)
                 
             else
                 y.isNan  = [y.isNan; 1];
-%                 disp(['entrou t=' num2str(t)]);
-%                 t = t+1; %erick
-%                 
-%                 % get noise for this trial
-%                 noise  = normrnd( 0 , noise_sd );
-%                 y.cVal = [ y.cVal; c + noise ];
-%                 
-%                 % get the data for this trial
-%                 y.zDiff = [y.zDiff; z(itr)];
-                
             end
         end
         
@@ -206,7 +187,6 @@ for irun = 1:numel(subjdata.subjdata)
         d.duration = [d.duration; df{irun}.veridicalDuration(itrial)];
         d.isCity   = [d.isCity; df{irun}.isCity(itrial)];
         d.bias     = [d.bias; 100*df{irun}.humanBias(itrial)];
-        
         
     end
 
