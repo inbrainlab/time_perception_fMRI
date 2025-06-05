@@ -33,9 +33,7 @@ fMask = spm_read_vols(spm_vol(functional_atlas),1);
 
 %% get participant's folder
 subj_str    = sprintf('%02d',subjnum);
-% subj_str
 subj_folder = dir([path_fMRI '/' subj_str '_CISC*']);
-% subj_folder
 
 if ~isempty(subj_folder) 
    disp('A pasta existe');
@@ -73,10 +71,8 @@ n_runs      = numel(EPI_folders);
 EPI_files = cell(n_runs,1);
 for irun = 1:n_runs
     epi_files        = dir([ EPI_folders{irun}, '/sw_uf*.nii']);
-%     epi_files
     EPI_files{irun}  = arrayfun(@(x) [EPI_folders{irun} '/' x.name],epi_files,'UniformOutput',false);
 end
-% EPI_files
 
 %% convert onsets to TRs
 onsets_TR = cell(n_runs,1);
@@ -88,13 +84,8 @@ fc = cell(n_runs,1);
 for irun = 1:n_runs
 
     clc;
-%     EPI_folders{irun}
     sprintf('run %d of %d...',[irun n_runs])
     label = run_label{irun};
-    which_ROI
-    
-    %behavioural_data = ['C:\Users\maxine\Dropbox\Projects\Sackler postdoc\fMRI & Time (Warrick)\data\' cisc_file '\eye_and_behaviour_' num2str(irun) '.mat'];
-    %load(behavioural_data);
     
     % keep the behavioural data
     subjdata{irun} = behaviour(behaviour.run==label,:);
@@ -109,16 +100,13 @@ for irun = 1:n_runs
         offsets_TR{itrial} = floor(offsets(itrial)/TR);
     end
     
-%     subjdata{irun}
     subjdata{irun} = addvars(subjdata{irun}, onsets_TR, 'NewVariableNames', 'onsets_TR');
     subjdata{irun} = addvars(subjdata{irun}, offsets_TR, 'NewVariableNames', 'offsets_TR');
     subjdata{irun}
 
     path_correction   = fullfile(path_data, 'extracted_voxels', int2str(subjnum));
     t_corr = table2array(readtable([path_correction '/time_corr.csv']));
-%     t_corr
     t_corr = t_corr(irun, :);
-%     t_corr(itrial)
     
     if strcmp(which_ROI, 'rGlasser')
          % loop trials and extract data
@@ -128,7 +116,6 @@ for irun = 1:n_runs
             t_off = subjdata{1, irun}.offsets_TR{itrial} - t_corr(itrial);
             
             % take those EPIs
-    %         EPI_files{irun} 
             tEPI = EPI_files{irun}(t_on:t_off);
             
             avg_data = nan( 360 , numel(tEPI) );
@@ -143,7 +130,6 @@ for irun = 1:n_runs
                 for iepi = 1:numel(tEPI)
                     
                     % get the voxels of the current EPI
-        %             iepi
                     current_epi = spm_read_vols(spm_vol(tEPI{iepi}));
                     
                     % get the signal from all voxels in the mask
@@ -178,10 +164,8 @@ for irun = 1:n_runs
             t_off = subjdata{1, irun}.offsets_TR{itrial} - t_corr(itrial);
             
             % take those EPIs
-    %         EPI_files{irun} 
             trial_size = t_off - t_on + 1;
             rand_idx = randi([1, numel(EPI_files{irun})-50]);
-%             disp('random initial index:' rand_idx)
             tEPI = EPI_files{irun}(rand_idx:rand_idx+trial_size);
             
             % initialise data for the trial
@@ -191,7 +175,6 @@ for irun = 1:n_runs
             for iepi = 1:numel(tEPI)
                 
                 % get the voxels of the current EPI
-    %             iepi
                 current_epi = spm_read_vols(spm_vol(tEPI{iepi}));
                 
                 % get the signal from all voxels in the mask
