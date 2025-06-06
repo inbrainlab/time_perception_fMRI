@@ -18,7 +18,7 @@
 %
 %  Maxine Sherman
 %  m.sherman@sussex.ac.uk
-%
+% Adapted in 2024 (desouza.erickalmeida@gmail.com)
 
 
 %  --------------------------------------------------
