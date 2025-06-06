@@ -106,9 +106,6 @@ for irun = 1:numel(subjdata.subjdata)
     run_data.z = zscore(run_data.z); %run_data.z-mean(run_data.z);%
     
     for itrial = 1:height(df{irun})
-%         if irun==2 & itrial==11
-%            pause
-%         end
 
         % get info
         idx = find(run_data.t == itrial);
@@ -122,7 +119,6 @@ for irun = 1:numel(subjdata.subjdata)
         % initialise the criterion
         reset_criterion        = 0;
         t                      = 0;
-%         c = tmax;
         
         % loop through the TRs
         for itr = 1:numel(z)
@@ -139,7 +135,6 @@ for irun = 1:numel(subjdata.subjdata)
                 % get prev criterion
                 if t == 1; c = tmax;
                 else
-%                     y.cVal
                     c = y.cVal(end) - slope*exp( -t * decay_rate ) + baseline;
                 end
                
@@ -166,16 +161,6 @@ for irun = 1:numel(subjdata.subjdata)
                 
             else
                 y.isNan  = [y.isNan; 1];
-%                 disp(['entrou t=' num2str(t)]);
-%                 t = t+1; %erick
-%                 
-%                 % get noise for this trial
-%                 noise  = normrnd( 0 , noise_sd );
-%                 y.cVal = [ y.cVal; c + noise ];
-%                 
-%                 % get the data for this trial
-%                 y.zDiff = [y.zDiff; z(itr)];
-                
             end
         end
         
