@@ -18,7 +18,7 @@
 %
 %  Maxine Sherman
 %  m.sherman@sussex.ac.uk
-%
+%  Adapted in 2024 (desouza.erickalmeida@gmail.com)
 
 
 %  --------------------------------------------------
@@ -71,14 +71,6 @@ baseline_list         = linspace(-3,0,50);
 decay_rate   = 1; % smaller values => steeper
 noise_sd     = 0.05;
 
-
-%% ========================================================================
-%  Initialise structures
-%  ========================================================================
-
-% y = struct('cVal',[],'isSalient',[],'zDiff',[], 'TR', [], 'isNan', []);
-% d = struct('nSalient',[],'report',[],'isCity',[],'bias',[],'duration',[]);
-
 %% ========================================================================
 %  Loop through data + estimate
 %  ========================================================================
@@ -111,9 +103,6 @@ for tmax = tmax_list
             run_data.z = zscore(run_data.z); %run_data.z-mean(run_data.z);%
             
             for itrial = 1:height(df{irun})
-        %         if irun==2 & itrial==11
-        %            pause
-        %         end
         
                 % get info
                 idx = find(run_data.t == itrial);
@@ -143,7 +132,6 @@ for tmax = tmax_list
                         % get prev criterion
                         if t == 1; c = tmax;
                         else
-        %                     y.cVal
                             c = y.cVal(end) - slope*exp( -t * decay_rate ) + baseline;
                         end
                        
@@ -169,17 +157,7 @@ for tmax = tmax_list
                         y.isNan = [y.isNan; 0];
                         
                     else
-                        y.isNan  = [y.isNan; 1];
-        %                 disp(['entrou t=' num2str(t)]);
-        %                 t = t+1; %erick
-        %                 
-        %                 % get noise for this trial
-        %                 noise  = normrnd( 0 , noise_sd );
-        %                 y.cVal = [ y.cVal; c + noise ];
-        %                 
-        %                 % get the data for this trial
-        %                 y.zDiff = [y.zDiff; z(itr)];
-                        
+                        y.isNan  = [y.isNan; 1];                   
                     end
                 end
                 
@@ -189,8 +167,7 @@ for tmax = tmax_list
                 d.duration = [d.duration; df{irun}.veridicalDuration(itrial)];
                 d.isCity   = [d.isCity; df{irun}.isCity(itrial)];
                 d.bias     = [d.bias; 100*df{irun}.humanBias(itrial)];
-                
-                
+                   
             end
         end
 
